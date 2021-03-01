@@ -1,11 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+    <link href="styles/styles.css" rel="stylesheet">
+
     <title>R4e</title>
+	<!-- insert favicon files -->
+
+    <!-- scripts for blockly code -->
+    <script src="blockly/blockly_compressed.js"></script>
+    <script src="blockly/blocks_compressed.js"></script>
+    <script src="blockly/js/de.js"></script>
+    <script src="blockly/javascript_compressed.js"></script>
 </head>
-<body>
-    <div><p>Robo for Earth</p></div>
+
+<!-- body -->
+
+<body ontouchstart="" id="body">
+    <!-- ontouchstart="" enables low-delay CSS transitions. -->
+	<ul id="navigation" style="float:right; margin-top: 3%;">
+		<li class="dropdown">
+			<button onclick="showMenu('programDropdown')" class="dropbtn button">Programm</button>
+			<!-- Load/Save or Delete program from Dropdown menu -->
+			<div id="programDropdown" class="dropdown-content" >
+					<p class="tablinks programChoice">Wähle ein Programm:</p>
+					<select id="generate" class="select tablinks dropbtn programChoice" style="border-color:transparent;" onclick="createMenu()"></select>
+					<button id="saveData" class="select tablinks " onclick="save()">Speichern</button>
+					<button id="restoreData" class="select tablinks" onclick="restore()">Laden</button>
+					<button class="select tablinks" onclick="deleteItem()">Löschen</button>			
+			</div>
+		</li>
+		<li class="dropdown">
+			<button onclick="showMenu()" class="dropbtn button">Menu</button>
+			<div id="myDropdown" class="dropdown-content" style="margin-left:120%">
+				<button id="disconnect" class="select tablinks">Trennen</button>
+				<button id="endProgram" class="select tablinks" onclick="end_program()">Beenden</button>
+				<button class="select tablinks" onclick="deleteAll()">Speicher leeren</button>
+			</div>
+		</li>
+		<li class="bluetooth">
+			<button id="connect" type="button" class="button blue">Verbinden</button>
+		</li>
+	</ul>
+    <table>
+        <tr>
+            <!-- Title, Logo and Program commands -->
+            <img src="media/logo/ecology.png" class="logo" style="float:left;margin-top: 10px; height:15%;">
+        </tr>
+        <tr>
+            <td class="control_buttons">
+                    <button id="start" onclick="handlePlay();" type="button" class="button green" style="float:left;font-size: 13px;padding-left:30px;padding-right:30px;">Start</button>
+                    <button id="stop" type="button" class="button rosy" style="float:left; margin-left:20px;font-size: 13px;">Stopp</button>
+                    <button id="downloadHex" onclick="hexFileUploadTipp();" type="button" class="download">Micro:bit Firmware Download</button>
+            </td>
+        </tr>
+        <tr>
+            <!-- Area for blockly workspace -->
+            <td id="blocklyArea"></td>
+        </tr>
+    </table>
+
+    <!-- script for bluetooth communication -->
+    <script type="text/javascript" src="scripts/ble3.js"></script>
+	<script type="text/javascript" src="scripts/controls.js"></script>
+
+    <!-- blockly programming window -->
+    <div id="blocklyDiv" style="position: absolute; margin-top:0.5%"></div>
+
+    <!-- R4G blocks design -->
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none;">
+        <!-- Category Movements -->
+        <category name="LED-Anzeige" colour="#5ba593">
+            <block type="show_text"></block>
+            <block type="show_picture">
+                <field name="pic">1</field>
+                <field name="show_duration">1</field>
+            </block>
+            <block type="show_picture_async">
+                <field name="picture">1</field>
+            </block>
+            <block type="leds_off"></block>
+            <block type="show_value"></block>
+        </category>
+
+        <category name ="Fühlen" colour="195">
+            <block type="temperature"></block>
+        </category>
+
+        <category name="Logic" colour="#5b80a5">
+            <block type="c_if"></block>
+            <block type="logic_compare">
+              <field name="OP">EQ</field>
+            </block>
+            <block type="math_number">
+                <field name="NUM">0</field>
+            </block>
+        </category>
+
+        <category name="Bewegungen" colour="#5b5ba5">
+            <block type="forward">
+                <field name="forward_duration">0.1</field>
+            </block>
+            <block type="back">
+                <field name="back_duration">0.1</field>
+            </block>
+            <block type="left">
+                <field name="left_duration">0.1</field>
+            </block>
+            <block type="right">
+                <field name="right_duration">0.1</field>
+            </block>
+            <block type="turn_left">
+                <field name="turn_left_duration">0.1</field>
+            </block>
+            <block type="turn_right">
+                <field name="turn_right_duration">0.1</field>
+            </block>
+        </category>
+
+        <category name="Kombinationen" colour="290">
+            <block type="dance">
+                <field name="repeat">1</field>
+                <field name="intensity">kurz</field>
+            </block>
+            <block type="zigzag">
+                <field name="repeat">1</field>
+                <field name="intensity">kurz</field>
+            </block>
+            <block type="shake">
+                <field name="repeat">1</field>
+                <field name="intensity">kurz</field>
+            </block>
+            <block type="pirouette">
+                <field name="repeat">1</field>
+                <field name="direction">Links</field>
+            </block>
+        </category>
+        <!--
+        <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
+        -->
+        <category name="Klänge" colour="#a55b5b">
+            <block type="melody">
+                <field name="melody">M1</field>
+            </block>
+            <block type="sound">
+                <field name="sound">K01</field>
+            </block>
+        </category>
+
+        <category name="Einstellungen" colour="65">
+            <block type="motor">
+                <field name="motor">1</field>
+                <field name="velocity">400</field>
+            </block>
+			<block type="turn_display" colour="#5ba593">
+				<field name="degrees">0</field>
+			</block>
+        </category>
+
+        <category name="Steuerung" colour="#5ba55b">
+            <block type="repetition">
+                <field name="repetition">1</field>
+            </block>
+			<block type="wait_seconds">
+				<field name="seconds">0.1</field>
+			</block>
+			<block type="start_block"></block>
+        </category>
+    </xml>
+	
+	<!-- Making Toolbox visible and resizable in Web-browser -->
+    <script src="scripts/blocklyArea.js"></script>
+	
+    <!-- Blockly R4G blocks script -->
+    <script src="scripts/R4Gblocks.js"></script>
 </body>
+<footer>
+    <div class="download"> Icon made by 
+        <a href="https://www.freepik.com" title="Freepik">Freepik</a> 
+        from 
+        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+    </div>
+</footer>
+
 </html>
