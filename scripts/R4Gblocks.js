@@ -7,7 +7,8 @@
 // Delimiter for messages to micro:bit
 var delimiter = ':';
 var float_delimiter = '.0:';
-var fullVelocity = 'Gb31';
+var fullVelocity = 'Gb15';
+let motorVelocity = {1:'15',2:'15'};
 
 // Movement combinations
 var combinations = [
@@ -32,6 +33,9 @@ function send_combination(index=0, repetitions=1, intensity) {
 			code += combinations[index][k] + delimiter;
 		}
 	}
+	// reset motor velocity to latest value before combination
+	code += 'G1' + motorVelocity['1'] + delimiter;
+	code += 'G2' + motorVelocity['2'] + delimiter;
 	return code;
 }
 
@@ -64,7 +68,6 @@ Blockly.JavaScript['forward'] = function (block) {
 	var code = 'Bv' + number_forward_duration + (number_forward_duration % 1 == 0 ? float_delimiter : delimiter);
 	return code;
 };
-
 // Backwards 'z'	
 Blockly.Blocks['back'] = {
 	init: function () {
@@ -88,7 +91,6 @@ Blockly.JavaScript['back'] = function (block) {
 	var code = 'Bz' + number_back_duration + (number_back_duration % 1 == 0 ? float_delimiter : delimiter);
 	return code;
 };
-
 // Left 'l'
 Blockly.Blocks['left'] = {
 	init: function () {
@@ -110,7 +112,6 @@ Blockly.JavaScript['left'] = function (block) {
 	var code = 'Bl' + number_left_duration + (number_left_duration % 1 == 0 ? float_delimiter : delimiter);
 	return code;
 };
-
 // Right 'r'
 Blockly.Blocks['right'] = {
 	init: function () {
@@ -132,7 +133,6 @@ Blockly.JavaScript['right'] = function (block) {
 	var code = 'Br' + number_right_duration + (number_right_duration % 1 == 0 ? float_delimiter : delimiter);
 	return code;
 };
-
 // Left-turn 'L' 
 Blockly.Blocks['turn_left'] = {
 	init: function () {
@@ -154,7 +154,6 @@ Blockly.JavaScript['turn_left'] = function (block) {
 	var code = 'BL' + number_turn_left_duration + (number_turn_left_duration % 1 == 0 ? float_delimiter : delimiter);
 	return code;
 };
-
 // Right-turn 'R' 
 Blockly.Blocks['turn_right'] = {
 	init: function () {
@@ -199,7 +198,6 @@ Blockly.JavaScript['dance'] = function (block) {
 	var dropdown_intensity = block.getFieldValue('intensity');
 	return send_combination(0, number_repeat, dropdown_intensity);
 };
-
 // Zigzag 
 Blockly.Blocks['zigzag'] = {
 	init: function () {
@@ -221,7 +219,6 @@ Blockly.JavaScript['zigzag'] = function (block) {
 	var dropdown_intensity = block.getFieldValue('intensity');
 	return send_combination(1, number_repeat, dropdown_intensity);
 };
-
 // Shake 
 Blockly.Blocks['shake'] = {
 	init: function () {
@@ -243,7 +240,6 @@ Blockly.JavaScript['shake'] = function (block) {
 	var dropdown_intensity = block.getFieldValue('intensity');
 	return send_combination(2, number_repeat, dropdown_intensity);
 };
-
 // Pirouette 
 Blockly.Blocks['pirouette'] = {
 	init: function () {
@@ -273,12 +269,13 @@ Blockly.JavaScript['pirouette'] = function (block) {
 	return code;
 };
 
-// MELODY 'M/K'
+// AUDIO 
+// Play melody 'M'
 Blockly.Blocks['melody'] = {
 	init: function () {
 		this.appendDummyInput()
 			.appendField("Spiele Melodie")
-			.appendField(new Blockly.FieldDropdown([["Tusch","M1"],["Romantisch","M2"],["Star Wars","M3"],["Super Mario","M4"],["Donauwalzer","M5"],["Tango Kriminalis","M6"],["Don't Worry be Happy","M7"],["Somewhere over the Rainbow","M8"]]), "melody");
+			.appendField(new Blockly.FieldDropdown([["Tusch","M1"],["Romantisch","M2"],["Star Wars","M3"],["Super Mario","M4"],["Donauwalzer","M5"],["Tango Kriminalis","M6"],["Don't Worry be Happy","M7"],["Somewhere over the Rainbow","M8"],["Harry Potter","M9"]]), "melody");
 		this.setInputsInline(false);
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
@@ -292,8 +289,7 @@ Blockly.JavaScript['melody'] = function (block) {
 	var code = dropdown_melody + delimiter;
 	return code;
 };
-
-// MELODY 'M'
+// Play sound 'K'
 Blockly.Blocks['sound'] = {
 	init: function () {
 		this.appendDummyInput()
@@ -313,16 +309,16 @@ Blockly.JavaScript['sound'] = function (block) {
 	return code;
 };
 
-
 // SETTINGS
 // Motor velocity 'G'
 Blockly.Blocks['motor'] = {
 	init: function () {
 		this.appendDummyInput()
 			.appendField("Motor")
-			.appendField(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["1+2", "b"]]), "motor")
-			.appendField("Leistung:")
-			.appendField(new Blockly.FieldNumber(20, 1, 31, 1), "velocity");
+			.appendField(new Blockly.FieldDropdown([["Links", "2"], ["Rechts", "1"], ["Beide", "b"]]), "motor")
+			.appendField("Geschwindigkeit:")
+			.appendField(new Blockly.FieldNumber(20, 1, 31, 1), "velocity")
+			.appendField("von 31");
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setColour(60);
@@ -338,8 +334,7 @@ Blockly.JavaScript['motor'] = function (block) {
 	var code = 'G' + dropdown_motor + velocity + delimiter;
 	return code;
 };
-
-// Turn display 'T'
+// Turn display 'T' (does not work on microbit version 2 yet)
 Blockly.Blocks['turn_display'] = {
 	init: function() {
 		this.appendDummyInput()
@@ -359,8 +354,6 @@ Blockly.JavaScript['turn_display'] = function(block) {
   	var code = 'T' + dropdown_degrees + delimiter;
 	return code;
 };
-
-
 // DISPLAY 'A'
 // Write text
 Blockly.Blocks['show_text'] = {
@@ -384,7 +377,6 @@ Blockly.JavaScript['show_text'] = function (block) {
 	var code = text_led_text + delimiter;
 	return code;
 };
-
 // Show picture
 Blockly.Blocks['show_picture'] = {
 	init: function () {
@@ -415,7 +407,7 @@ Blockly.JavaScript['show_picture'] = function (block) {
 	var code = 'A' + dropdown_pic + number_show_duration + delimiter;
 	return code;
 };
-
+// ASYNC Picture
 Blockly.Blocks['show_picture_async'] = {
 	init: function () {
 		this.appendDummyInput()
@@ -457,7 +449,6 @@ Blockly.JavaScript['leds_off'] = function(block) {
    var code = 'A0' + delimiter;
    return code;
 };
-
 // block with input field for number or text
 Blockly.Blocks['show_value'] = {
 		init: function() {
@@ -501,7 +492,6 @@ Blockly.JavaScript['wait_seconds'] = function(block) {
   	var code = 'W'+ number_seconds_to_wait + (number_seconds_to_wait % 1 == 0 ? float_delimiter : delimiter);
   	return code;
 };
-
 // Repeat
 Blockly.Blocks['repetition'] = {
 	init: function () {
@@ -529,7 +519,6 @@ Blockly.JavaScript['repetition'] = function (block) {
 	}
 	return code;
 };
-
 // Start
 Blockly.Blocks['start_block'] = {
  	init: function() {
@@ -547,6 +536,8 @@ Blockly.JavaScript['start_block'] = function(block) {
 	return code;
 };
 
+// SENSORS and VALUES
+// Show Sensor Value
 Blockly.Blocks['show_sensor_value'] = {
 	init: function() {
 		this.appendDummyInput()
@@ -565,7 +556,7 @@ Blockly.JavaScript['show_sensor_value'] = function(block) {
 	var code = 'S' + dropdown_sensor + delimiter;
 	return code;
 };
-
+// Temperature
 Blockly.Blocks['temperature'] = {
 	init: function() {
 		this.appendDummyInput()
@@ -583,6 +574,8 @@ Blockly.JavaScript['temperature'] = function(block) {
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
+// LOGIC
+// Condition
 Blockly.defineBlocksWithJsonArray([ {
     type: "c_if", 
 	message0: "%{BKY_CONTROLS_IF_MSG_IF} %1", 
@@ -643,44 +636,7 @@ Blockly.JavaScript['c_if'] = function(block) {
 		console.log(e);
 	}
 };
-
-/*
-function getRndInteger(a, b) {
-	if (a > b) {
-		var c = a;
-		a = b;
-		b = c;
-	}
-	return Math.floor(Math.random() * (b - a + 1) + a);
-}
-
-Blockly.defineBlocksWithJsonArray([ {
-    type: "math_rand_i", 
-	message0: "%{BKY_MATH_RANDOM_INT_TITLE}", 
-	args0: [
-		{ type: "input_value", name: "FROM", check: "Number" },
-    	{ type: "input_value", name: "TO", check: "Number" }
-	], 
-	inputsInline: !0, 
-	output: "Number", 
-	style: "logic_blocks", 
-	tooltip: "%{BKY_MATH_RANDOM_INT_TOOLTIP}", 
-	helpUrl: "%{BKY_MATH_RANDOM_INT_HELPURL}"
-}])
-Blockly.JavaScript.math_rand_i=function(a){
-	var b=Blockly.JavaScript.valueToCode(a,"FROM",Blockly.JavaScript.ORDER_COMMA)||"0";
-	a=Blockly.JavaScript.valueToCode(a,"TO",Blockly.JavaScript.ORDER_COMMA)||"0"; 
-	try {
-		var rand_int = getRndInteger(a,b);
-		console.log(rand_int);
-		var result = "('" + rand_int + "')";
-		return rand_int;
-	} catch(e) {
-		console.log(e);
-	}
-};
-*/
-
+// Number
 Blockly.defineBlocksWithJsonArray([{ 
 	type: "math_number", 
 	message0: "%1", 
@@ -694,9 +650,3 @@ Blockly.defineBlocksWithJsonArray([{
 	tooltip: "%{BKY_MATH_NUMBER_TOOLTIP}", 
 	extensions: ["parent_tooltip_when_inline"] 
 }])
-/*
-Blockly.JavaScript['math_num'] = function(a) {
-	a=parseFloat(a.getFieldValue("NUM"));
-	return[a,0<=a?Blockly.JavaScript.ORDER_ATOMIC:Blockly.JavaScript.ORDER_UNARY_NEGATION]
-};
-*/

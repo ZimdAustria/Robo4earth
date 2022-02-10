@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
@@ -15,9 +14,6 @@
     <script src="blockly/js/de.js"></script>
     <script src="blockly/javascript_compressed.js"></script>
 </head>
-
-<!-- body -->
-
 <body ontouchstart="" id="body">
     <!-- ontouchstart="" enables low-delay CSS transitions. -->
 	<ul id="navigation" style="float:right; margin-top: 3%;">
@@ -138,9 +134,7 @@
                 <field name="direction">Links</field>
             </block>
         </category>
-        <!--
-        <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
-        -->
+
         <category name="Klänge" colour="#a55b5b">
             <block type="melody">
                 <field name="melody">M1</field>
@@ -151,15 +145,18 @@
         </category>
 
         <category name="Einstellungen" colour="65">
+            </block>
             <block type="motor">
                 <field name="motor">1</field>
-                <field name="velocity">400</field>
+                <field name="velocity">15</field>
             </block>
+            <!--turn display
 			<block type="turn_display" colour="#5ba593">
 				<field name="degrees">0</field>
 			</block>
+            -->
+        
         </category>
-
         <category name="Steuerung" colour="#5ba55b">
             <block type="repetition">
                 <field name="repetition">1</field>
@@ -169,6 +166,9 @@
 			</block>
 			<block type="start_block"></block>
         </category>
+        <!-- Variables
+        <category name="Variables" colour="#a55b80" custom="VARIABLE"></category>
+        -->
     </xml>
 	
 	<!-- Making Toolbox visible and resizable in Web-browser -->
