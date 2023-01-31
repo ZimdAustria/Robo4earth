@@ -238,7 +238,7 @@ function deleteAll() {
 	if (storage_items.length === 0) {
 		alert('Keine gespeicherten Programme vorhanden');
 	} else {
-		if (confirm('Achtung! Alle R4G Programme werden gelöscht! Bist du sicher dass du fortfahren willst?')) {
+		if (confirm('Achtung! Alle Robo4earth Programme werden gelöscht! Bist du sicher dass du fortfahren willst?')) {
 			for (key in localStorage) {
 				if (key.includes('R4G_')) {
 					let programName = key.replace('R4G_', '');
@@ -267,7 +267,7 @@ function end_program() {
 }
 
 function hexFileDownload() {
-	var confirmed = confirm('Willst du die R4g hex Datei auf deinen Computer laden?');
+	var confirmed = confirm('Willst du die Robo4earth hex Datei auf deinen Computer laden?');
 	if(confirmed) {
 		downloadFile(PATH_TO_HEX_FILE);
 	}
