@@ -22,7 +22,7 @@ Connect your Micro:bit to your computer via USB and load the R4E_MICROBIT.hex fi
 This app is supposed to be used with the Micro:bit V2, with the Micro:bit V1 better use the [R4G web application](https://robo4girls.zimd.at/).
 
 #### Connect and program the Micro:bit with the R4E web app
-Open the google chrome browser on your mobile device and navigate to the [R4E web application](https://zimdvienna.github.io/Robo4earth/). Don't forget to activate Bluetooth on your device! 
+Open the google chrome browser on your mobile device and navigate to the [R4E web application](https://robo4earth.zimd.at/). Don't forget to activate Bluetooth on your device! 
 On the R4E website click the <i>Verbinden</i> button, choose your micro:bit from the list and click <i>Koppeln</i>. Wait a few seconds until a confirmation message pops up. If the connection is not established quickly, disconnect the Micro:bit from its power source (computer or battery) and wait for one minute, then try again. If you still cannot establish a connection restart your mobile device. If the Micro:bit is successfully connected, it scrolls a "C" over its LED display.
 
 Now you can program the R4E robot by selecting blocks from the Blockly toolbox and dragging them into the workspace. If you click on one of the 6 sections in the toolbox it will list all blocks available in this section.
